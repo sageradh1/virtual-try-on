@@ -1,9 +1,15 @@
-Steps to run:
-1. Activate the environment
+Steps for first run:
+1. Create an env
+python -m venv venv
+
+2. Activate the environment
 source ./venv/bin/activate
 
-2. Upgrade pip and install dependencies
+3. Upgrade pip and install dependencies
 python -m pip install --upgrade pip
 
-3. To run in development
+4. Install dependency
+pip install -r requirements.txt 
+
+5. To run in development
 flask --app ./app.py run
