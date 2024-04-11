@@ -10,6 +10,11 @@ jobs:
       IMAGE_NAME: virtual-tryon
       PROJECT_ID: virtual-try-on-420019
 
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
     steps:
     - name: Checkout
       uses: actions/checkout@v2
