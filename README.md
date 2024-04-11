@@ -20,6 +20,9 @@ to create environment and install dependencies
 to activate the environment
     poetry shell
 
+To see the location of current virtual environment:
+    poetry show -v
+
 Create a new project using poetry: 
     poetry new <project_name>
     cd <project_name>
