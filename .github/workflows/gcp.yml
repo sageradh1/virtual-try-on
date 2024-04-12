@@ -35,13 +35,13 @@ jobs:
 
     - name: Configure Docker Client
       run: |-
-        gcloud auth configure-docker --quiet
+        gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
-    - name: Push Docker Image to Container Registry (GCR)
+    - name: Push Docker Image to Artifact Registry (GAR)
       env:
         GIT_TAG: v0.1.0
       run: |-
-        docker tag $IMAGE_NAME:latest gcr.io/$PROJECT_ID/$IMAGE_NAME:latest
-        docker tag $IMAGE_NAME:latest gcr.io/$PROJECT_ID/$IMAGE_NAME:$GIT_TAG
-        docker push gcr.io/$PROJECT_ID/$IMAGE_NAME:latest
-        docker push gcr.io/$PROJECT_ID/$IMAGE_NAME:$GIT_TAG
+        docker tag $IMAGE_NAME:latest us-central1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:latest
+        docker tag $IMAGE_NAME:latest us-central1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:$GIT_TAG
+        docker push us-central1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:latest
+        docker push us-central1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:$GIT_TAG
