@@ -30,6 +30,11 @@ jobs:
 
     - name: 'Use gcloud CLI'
       run: 'gcloud info'
+
+    - id: 'gcloud'
+      name: 'gcloud'
+      run: |-
+        gcloud secrets versions access "latest" --secret "my-secret"
   
     - name: Build Docker Image
       run: docker build -t $IMAGE_NAME:latest ./vto
