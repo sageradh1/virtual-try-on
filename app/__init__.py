@@ -7,7 +7,7 @@ from app.auth import auth as auth_blueprint
 from config import DevelopmentConfig, ProductionConfig
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path='/static', static_folder='static')
 
     if os.getenv('FLASK_ENV') == 'production':
         app.config.from_object(ProductionConfig)

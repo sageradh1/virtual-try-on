@@ -73,7 +73,7 @@ def register():
                 flash('An error occurred during registration. Please try again.', 'danger')
                 print(f"Error: {e}")  # Log the error for debugging
 
-    return render_template('register.html')
+    return render_template('auth/register.html')
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
