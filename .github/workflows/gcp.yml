@@ -19,6 +19,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Print Current Directory
+      run: |
+        pwd
+        ls -a
+
     - name: Configure GCP credentials
       id: auth
       uses: google-github-actions/auth@v2
