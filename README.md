@@ -34,7 +34,7 @@ poetry install
 
 to activate the environment
 ```
-    poetry shell
+poetry shell
 ```
 
 To see the location of current virtual environment:
