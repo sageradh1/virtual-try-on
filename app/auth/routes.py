@@ -1,17 +1,14 @@
-from flask import render_template, redirect, url_for, flash, request, jsonify,current_app
+from flask import render_template, redirect, url_for, flash, request, jsonify,current_app,abort, session, request
 from . import auth
 # from app import db
 from app.auth.models import User
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
+from werkzeug.security import check_password_hash
 from wtforms.validators import DataRequired, Email, EqualTo
-# from flask_wtf.file import FileField, FileAllowed
-# from .extensions import photos
-
+from datetime import datetime
 from werkzeug.utils import secure_filename
-# from werkzeug.exceptions import RequestEntityTooLarge
 import os
-
 
 
 def get_db():
@@ -19,6 +16,7 @@ def get_db():
     return db
 
 
+# Reference if wtf_form is used
 # class RegistrationForm(FlaskForm):
 #     username = StringField('Username', validators=[DataRequired()])
 #     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -26,57 +24,6 @@ def get_db():
 #     photo = FileField('Profile Photo', validators=[FileAllowed(photos, 'Images only!')])
 #     submit = SubmitField('Sign Up')
 
-
-
-@auth.route("/register-postman", methods=['GET', 'POST'])
-def register():
-
-
-    db = get_db()
-    if request.method == 'POST':
-
-        required_fields = ['username', 'password', 'image']
-        missing_fields = [field for field in required_fields if field not in request.form and field not in request.files]
-
-        if missing_fields:
-            # Return a 400 Bad Request with missing field details in JSON
-            return jsonify({
-                "status": 422,
-                "error": "Bad request",
-                "message": f"Missing required fields: {', '.join(missing_fields)}"
-            }), 422
-
-
-        username = request.form['username']
-        password = request.form['password']
-        file = request.files['image']
-        
-        # Check if the username already exists
-        user_exists = User.query.filter_by(username=username).first()
-        if user_exists:
-            flash('A user with that username already exists.', 'warning')
-            return render_template('register.html')
-
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(current_app.config['UPLOADED_PHOTOS_DEST'], filename)
-            try:
-                file.save(file_path)
-                user = User(username=username, image_file=filename)
-                user.set_password(password)
-                db.session.add(user)
-                db.session.commit()
-                flash('Your account has been created!', 'success')
-                return redirect(url_for('main.home'))  # Adjust to your actual 'home' view
-            except Exception as e:
-                db.session.rollback()  # Ensure session is clean on any exception
-                flash('An error occurred during registration. Please try again.', 'danger')
-                print(f"Error: {e}")  # Log the error for debugging
-
-    return render_template('register.html')
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg', 'gif'}
 
 # @auth.route('/register', methods=['GET', 'POST'])
 # def register():
@@ -92,40 +39,133 @@ def allowed_file(filename):
 #     return render_template('register.html', form=form)
 
 
+@auth.route("/register-postman", methods=['GET', 'POST'])
+def register():
+
+    db = get_db()
+    if request.method == 'POST':
+
+        required_fields = ['username', 'password', 'image']
+        missing_fields = [field for field in required_fields if field not in request.form and field not in request.files]
+
+        if missing_fields:
+            return jsonify({
+                "status": 422,
+                "error": "Bad request",
+                "message": f"Missing required fields: {', '.join(missing_fields)}"
+            }), 422
+
+        username = request.form['username']
+        password = request.form['password']
+        file = request.files['image']
+        
+        user_exists = User.query.filter_by(username=username).first()
+        if user_exists:
+            return jsonify({
+                "error": "Conflict",
+                "message": "A user with the provided username already exists."
+            }), 409
+            flash('A user with that username already exists.', 'warning')
+            return render_template('register.html')
+
+        if not file:
+            return jsonify({
+                "status": 422,
+                "error": "Bad request",
+                "message": f"Please confirm that image file is submitted."
+            }), 422
+            
+        if not allowed_file(file.filename):
+            return jsonify({
+                "status": 422,
+                "error": "Bad request",
+                "message": f"Please confirm that image file is in the right format."
+            }), 422
+
+        datetime_stamp = datetime.now().strftime("%Y%m%d%H%M%S")
+        filename_base, filename_ext = os.path.splitext(secure_filename(file.filename))
+        new_filename = f"{filename_base}_{datetime_stamp}{filename_ext}"
+
+        file_path = os.path.join(current_app.config['UPLOADED_PHOTOS_DEST'], new_filename)
+        try:
+            file.save(file_path)
+            user = User(username=username, image_path=file_path)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
+            
+            return jsonify({
+                "status": 200,
+                "message": "User create successfully",
+                "data": user.to_dict()
+            }), 200
+            
+            flash('Your account has been created!', 'success')
+            return redirect(url_for('main.home'))
+        
+        except Exception as e:
+            print("4")
+            print(e)
+            db.session.rollback()
+            return jsonify({
+                "status": 400,
+                "message": "Could not create a user"
+            }), 400
+            flash('An error occurred during registration. Please try again.', 'danger')
+            print(f"Error: {e}")
+    # return render_template('register.html')
 
 
-# @auth.route('/register-postman', methods=['POST'])
-# def register():
-#     # return jsonify({
-#     #     'success':True
-#     # })
+@auth.route("/login", methods=['POST'])
+def login():
+    db = get_db()
+    # username = request.form['username']
+    # password = request.form['password']
 
-#     db = get_db()
-#     # Assuming JSON data is sent with the request
-#     data = request.get_json()
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
 
-#     if not data:
-#         return jsonify({'error': 'No data provided'}), 400
 
-#     username = data.get('username')
-#     email = data.get('email')
-#     password = data.get('password')
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({
+            "status": 404,
+            "error": "Not Found",
+            "message": "User not found."
+        }), 404
 
-#     if not all([username, email, password]):
-#         return jsonify({'error': 'Missing data'}), 400
+    if user and check_password_hash(user.password_hash, password):
+        session['user_id'] = user.id
+        return jsonify({
+            "status": 200,
+            "message": "Login successful",
+            "data": user.to_dict()    
+        }), 200
+    else:
+        return jsonify({
+            "status": 401,
+            "error": "Unauthorized",
+            "message": "Invalid username or password."
+        }), 401
 
-#     # Check if user already exists
-#     existing_user = User.query.filter((User.username == username) | (User.email == email)).first()
-#     if existing_user:
-#         return jsonify({'error': 'User already exists'}), 409
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg'}
 
-#     # Create new user instance
-#     user = User(username=username, email=email)
-#     user.set_password(password)
+@auth.route('/get-users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    users_data = [user.to_dict() for user in users]
+    return jsonify(users_data), 200
 
-#     # Add new user to the database
-#     db.session.add(user)
-#     db.session.commit()
 
-#     # Optionally return the created user's information
-#     return jsonify({'message': 'User created successfully', 'user': {'username': user.username, 'email': user.email}}), 201
+@auth.route('/protected-route',methods=['GET'])
+def protected_route():
+    if 'user_id' not in session:
+        abort(401)
+    return 'This is a protected route.'
+
+@auth.route("/logout",methods=['POST'])
+def logout():
+    session.pop('user_id', None)
+    return jsonify({"status": 200, "message": "Logged out successfully"}), 200

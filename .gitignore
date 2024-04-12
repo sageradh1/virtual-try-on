@@ -17,3 +17,9 @@ extra-folder
 
 .env
 .DS_Store
+
+migrations
+
+*.jpg
+*.jpeg
+*.png

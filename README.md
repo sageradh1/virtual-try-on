@@ -4,7 +4,7 @@ pyenv versions
 ```
     
 
-Choose the required version: 
+To choose the required version: 
 ```
 pyenv local 3.10.12(for the project folder only)
 pyenv global 3.10.12(for globally only)
@@ -26,57 +26,68 @@ or
 ```
 
 
-to create environment and install dependencies
+To create environment and install dependencies
 ```
 poetry install 
 ```
 
 
-to activate the environment
+To activate the environment
 ```
-    poetry shell
+poetry shell
 ```
 
 To see the location of current virtual environment:
 ```
 poetry show -v
 ```
-    
 
-Create a new project using poetry: 
+To initialize db for the first time
+```
+poetry run flask init-db
+```
+
+Only to create a new project using poetry: 
 ```
 poetry new <project_name>
 cd <project_name>
 ```
 
 
-Add new dependency:
+To add new dependency:
 ```
 poetry add <package>
 poetry add -D <package> (dev dependency)
 ```
 
 
-to run command:
+To run command:
 ```
 poetry run flask run
 ```
 
 
-to remove the environment:
+To remove the environment:
 ```
 poetry env remove <environment_name>
 ```
     
 
-to deactivate:
+To deactivate:
 ```
 deactivate
 ```
     
 
-to see current env list:
+To see current env list:
 ```
 poetry config --list
+```
+    
+To see current env list:
+```
+flask db init (first time)
+flask db migrate -m "Initial migration." (When there is changes)
+flask db upgrade
 ```
     
