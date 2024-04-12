@@ -19,25 +19,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Print Current Directory
-      run: |
-        pwd
-        ls -a
-
-    - id: auth
-      name: Configure GCP credentials
+    - id: 'auth'
       uses: 'google-github-actions/auth@v2'
       with:
         workload_identity_provider: 'projects/334629917966/locations/global/workloadIdentityPools/vto-pool/providers/vto-github'
-        create_credentials_file: true
         service_account: 'github-actions@virtual-try-on-420019.iam.gserviceaccount.com'
-        access_token_lifetime: "360s"
 
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v2'
-  
+
     - name: 'Use gcloud CLI'
-      run: 'gcloud auth list --filter=status:ACTIVE --format="value(account)"'
+      run: 'gcloud info'
   
     - name: Build Docker Image
       run: docker build -t $IMAGE_NAME:latest ./vto
