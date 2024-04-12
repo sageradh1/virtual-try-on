@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "vto"
+name = "virtual-try-on"
 version = "0.1.0"
 description = ""
 authors = ["Sagar Adhikari <sageradh@gmail.com>"]
@@ -8,6 +8,9 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 flask = "^3.0.3"
+flask-sqlalchemy = "^3.1.1"
+flask-wtf = "^1.2.1"
+python-dotenv = "^1.0.1"
 
 
 [build-system]

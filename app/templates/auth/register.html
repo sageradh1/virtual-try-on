@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+    <form action="{{ url_for('auth.register') }}" method="post" enctype="multipart/form-data">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required><br>
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required><br>
+        <label for="image">Profile Image (max 2MB):</label>
+        <input type="file" name="image" id="image" accept="image/*"><br>
+        <input type="submit" value="Register">
+    </form>
+</body>
+</html>
