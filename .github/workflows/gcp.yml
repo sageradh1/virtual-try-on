@@ -22,7 +22,7 @@ jobs:
     - uses: google-github-actions/auth@v2
       with:
         workload_identity_provider: 'projects/334629917966/locations/global/workloadIdentityPools/github-actions-cloud-run/providers/virtual-try-on'
-        service_account: 'github-actions-sa@virtual-try-on-420019.iam.gserviceaccount.com'
+        service_account: 'github-actions@virtual-try-on-420019.iam.gserviceaccount.com'
 
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v2'
