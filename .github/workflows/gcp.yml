@@ -28,7 +28,7 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v2'
   
     - name: 'Use gcloud CLI'
-      run: 'gcloud info'
+      run: 'gcloud auth list --filter=status:ACTIVE --format="value(account)"'
   
     - name: Build Docker Image
       run: docker build -t $IMAGE_NAME:latest ./vto
