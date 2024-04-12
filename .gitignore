@@ -13,4 +13,7 @@ dist/
 build/
 *.egg-info/
 
-# */.DS_Store
+extra-folder
+
+.env
+.DS_Store
