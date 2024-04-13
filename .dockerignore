@@ -18,3 +18,10 @@ venv
 *.swp
 
 # Exclude any other files or directories specific to your project
+static/generated/*.jpg
+static/generated/*.jpeg
+static/generated/*.png
+
+static/uploaded/*.jpg
+static/uploaded/*.jpeg
+static/uploaded/*.png

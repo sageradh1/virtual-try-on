@@ -14,6 +14,7 @@ class Config(object):
     GENERATED_PHOTOS_DEST =  basedir+"/app/static/generated"
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024 #max allowed video filesize is 16MB
     ALLOWED_PHOTO_EXTENSIONS = set(['jpg', 'jpeg', 'png'])
+    FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY')
     API_KEY=os.getenv('API_KEY')
     DB_NAME = os.getenv('DB_NAME')
     DB_USERNAME = os.getenv('DB_USERNAME')
