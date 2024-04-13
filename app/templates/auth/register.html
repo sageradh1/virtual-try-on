@@ -1,18 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='stylesheets/styles.css') }}">
     <meta charset="UTF-8">
     <title>Register</title>
 </head>
 <body>
-    <form action="{{ url_for('auth.register') }}" method="post" enctype="multipart/form-data">
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username" required><br>
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email" required><br>
-        <label for="image">Profile Image (max 2MB):</label>
-        <input type="file" name="image" id="image" accept="image/*"><br>
-        <input type="submit" value="Register">
-    </form>
+    <nav>
+        <div class="logo-container">
+            <img src="{{ url_for('static',filename='assets/MirrorStyle_logo.png') }}" alt="MirrorStyle Logo">
+            <a href="/">MirrorStyle</a>
+        </div>
+        <ul>
+            <li style="float: right;"><a href="#">Login</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container2">
+        <h1>Register</h1>
+        <form action="{{ url_for('auth.register') }}" method="post" enctype="multipart/form-data">
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" required><br>
+            <label for="email">Email:</label>
+            <input type="email" name="email" id="email" required><br>
+            <label for="image">Profile Image (max 2MB):</label>
+            <input type="file" name="image" id="image" accept="image/*"><br>
+            <div  class="centered">
+            <input type="submit" value="Register">
+            </br/><br/>
+            <a href="#" class="login-link">Already have an account? Login</a>
+        </div>
+        </form>
+    </div>
 </body>
 </html>

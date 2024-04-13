@@ -37,9 +37,7 @@ def get_db():
 #         flash('Congratulations, you are now a registered user!')
 #         return redirect(url_for('auth.login'))
 #     return render_template('register.html', form=form)
-
-
-@auth.route("/register-postman", methods=['GET', 'POST'])
+@auth.route("/register", methods=['GET', 'POST'])
 def register():
 
     db = get_db()
@@ -66,7 +64,7 @@ def register():
                 "message": "A user with the provided username already exists."
             }), 409
             flash('A user with that username already exists.', 'warning')
-            return render_template('register.html')
+            return render_template('auth/register.html')
 
         if not file:
             return jsonify({
@@ -113,7 +111,7 @@ def register():
             }), 400
             flash('An error occurred during registration. Please try again.', 'danger')
             print(f"Error: {e}")
-    # return render_template('register.html')
+#     return render_template('register.html')
 
 
 @auth.route("/login", methods=['POST'])
