@@ -12,25 +12,33 @@
             <a href="/">MirrorStyle</a>
         </div>
         <ul>
-            <li style="float: right;"><a href="#">Login</a></li>
+            <li style="float: right;"><a href="auth/login">Login</a></li>
         </ul>
     </nav>
     
     <div class="container2">
         <h1>Register</h1>
-        <form action="{{ url_for('auth.register') }}" method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data">
             <label for="username">Username:</label>
             <input type="text" name="username" id="username" required><br>
+        
             <label for="email">Email:</label>
             <input type="email" name="email" id="email" required><br>
+        
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required><br>
+        
             <label for="image">Profile Image (max 2MB):</label>
             <input type="file" name="image" id="image" accept="image/*"><br>
-            <div  class="centered">
-            <input type="submit" value="Register">
-            </br/><br/>
-            <a href="#" class="login-link">Already have an account? Login</a>
-        </div>
+        
+            <div class="centered">
+                <input type="submit" value="Register">
+                <br/><br/>
+                <a href="auth/login" class="login-link">Already have an account? Login</a>
+            </div>
         </form>
+        
     </div>
+    <script src="{{ url_for('static',filename='js/register.js') }}"></script>
 </body>
 </html>

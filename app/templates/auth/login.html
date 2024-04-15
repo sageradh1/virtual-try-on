@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='stylesheets/styles.css') }}">
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+    <nav>
+        <div class="logo-container">
+            <img src="{{ url_for('static',filename='assets/MirrorStyle_logo.png') }}" alt="MirrorStyle Logo">
+            <a href="/">MirrorStyle</a>
+        </div>
+        <ul>
+            <li style="float: right;"><a href="auth/register">Register</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container2">
+        <h1>Login</h1>
+        <form method="post" action="auth/login">
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" required><br>
+        
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required><br>
+        
+            <div class="centered">
+                <input type="submit" value="Login">
+                <br/><br/>
+                <a href="auth/register" class="register-link">Don't have an account? Register</a>
+            </div>
+        </form>
+        
+        
+    </div>
+    <script src="{{ url_for('static',filename='js/login.js') }}"></script>
+</body>
+</html>

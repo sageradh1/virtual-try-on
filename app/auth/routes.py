@@ -41,6 +41,8 @@ def get_db():
 def register():
 
     db = get_db()
+    if request.method == 'GET':
+        return render_template('auth/register.html')
     if request.method == 'POST':
 
         required_fields = ['username', 'password', 'image']
@@ -114,38 +116,39 @@ def register():
 #     return render_template('register.html')
 
 
-@auth.route("/login", methods=['POST'])
+@auth.route("/login", methods=['POST', 'GET'])
 def login():
-    db = get_db()
-    # username = request.form['username']
-    # password = request.form['password']
+    if request.method == 'GET':
+        return render_template('auth/login.html')
+    if request.method == 'POST':
+        db = get_db()
+        username = request.form['username']
+        password = request.form['password']
 
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
+        # data = request.get_json()
 
 
-    user = User.query.filter_by(username=username).first()
-    if not user:
-        return jsonify({
-            "status": 404,
-            "error": "Not Found",
-            "message": "User not found."
-        }), 404
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            return jsonify({
+                "status": 404,
+                "error": "Not Found",
+                "message": "User not found."
+            }), 404
 
-    if user and check_password_hash(user.password_hash, password):
-        session['user_id'] = user.id
-        return jsonify({
-            "status": 200,
-            "message": "Login successful",
-            "data": user.to_dict()    
-        }), 200
-    else:
-        return jsonify({
-            "status": 401,
-            "error": "Unauthorized",
-            "message": "Invalid username or password."
-        }), 401
+        if user and check_password_hash(user.password_hash, password):
+            session['user_id'] = user.id
+            return jsonify({
+                "status": 200,
+                "message": "Login successful",
+                "data": user.to_dict()    
+            }), 200
+        else:
+            return jsonify({
+                "status": 401,
+                "error": "Unauthorized",
+                "message": "Invalid username or password."
+            }), 401
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg'}
