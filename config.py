@@ -20,7 +20,7 @@ class Config(object):
     DB_USERNAME = os.getenv('DB_USERNAME')
     DB_PASSWORD = os.getenv('DB_PASSWORD')
     SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
-    API_BASE_URL = "http://127.0.0.1:5000"
+    API_BASE_URL = "http://127.0.0.1:8080"
 
 
 class DevelopmentConfig(Config):
