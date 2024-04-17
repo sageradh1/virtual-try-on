@@ -1,4 +1,6 @@
 from flask import render_template, redirect, url_for, flash, request, jsonify,current_app,abort, session, request
+
+from app.vision.synthesis import ImageSynthesiser
 from . import auth
 # from app import db
 from app.auth.models import User
@@ -9,11 +11,23 @@ from wtforms.validators import DataRequired, Email, EqualTo
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
-
+from app.vision.synthesis1 import produce_synthesized_image
 
 def get_db():
     from app.extensions import db
     return db
+
+# synthesiser = ImageSynthesiser()  # Create an instance of ImageSynthesiser
+
+# # @auth.before_app_first_request()
+# # def preload_synthesiser():
+# #     # Preload the ImageSynthesiser during app startup
+# #     synthesiser.preload()
+
+# @auth.before_app_first_request
+# def preload_synthesiser():
+#     # Preload the ImageSynthesiser during app startup
+#     current_app.synthesiser.preload()
 
 
 # Reference if wtf_form is used
@@ -45,6 +59,7 @@ def register():
     db = get_db()
     if request.method == 'POST':
 
+
         required_fields = ['username', 'password', 'image']
         missing_fields = [field for field in required_fields if field not in request.form and field not in request.files]
 
@@ -66,7 +81,7 @@ def register():
                 "message": "A user with the provided username already exists."
             }), 409
             flash('A user with that username already exists.', 'warning')
-            return render_template('register.html')
+            return render_template('auth/register.html')
 
         if not file:
             return jsonify({
@@ -87,6 +102,12 @@ def register():
         new_filename = f"{filename_base}_{datetime_stamp}{filename_ext}"
 
         file_path = os.path.join(current_app.config['UPLOADED_PHOTOS_DEST'], new_filename)
+        
+        produce_synthesized_image(
+            person_image_path='/Users/sagar/working_dir/github_personal/virtual-try-on/app/static/uploaded/75eec2960b49802f465d69f35943c154.jpg',
+            cloth_image_path='/Users/sagar/working_dir/github_personal/virtual-try-on/app/static/uploaded/NL6mAYJTuylw373ae3g-Z.jpeg'
+        )
+        
         try:
             file.save(file_path)
             user = User(username=username, image_path=file_path)

@@ -28,7 +28,8 @@ or
 
 To create environment and install dependencies
 ```
-poetry install 
+poetry install (dev env)
+poetry install --no-dev (prod env)
 ```
 
 
@@ -44,7 +45,9 @@ poetry show -v
 
 To initialize db for the first time
 ```
-poetry run flask init-db
+flask db init (first time)
+flask db migrate -m "Initial migration." (When there are changes in models)
+flask db upgrade (To apply)
 ```
 
 Only to create a new project using poetry: 
@@ -83,11 +86,23 @@ To see current env list:
 ```
 poetry config --list
 ```
-    
-To see current env list:
+
+To see current virtualenvs list:
 ```
-flask db init (first time)
-flask db migrate -m "Initial migration." (When there is changes)
-flask db upgrade
+pyenv virtualenvs
 ```
-    
+
+To see current virtualenvs list:
+```
+pyenv virtualenv 3.10.12 vto-2
+pyenv activate vto-2
+which pip
+
+
+if path is not accurate then, echo $PATH:
+if venv path is not there, add path:
+export PATH=/Users/<user>/.pyenv/versions/3.10.12/envs/vto-2/bin:$PATH
+source /Users/<user>/.pyenv/versions/3.10.12/envs/vto-2/bin/activate
+
+deactivate
+``` 
