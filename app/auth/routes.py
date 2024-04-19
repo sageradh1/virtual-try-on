@@ -271,18 +271,18 @@ def register():
 
                 # background_synthesis_function.delay(data_dict=data_dict)
 
-                user = User(username=username,gender=gender, image_path=uploaded_file_path)
-                user.set_password(password)
-                db.session.add(user)
-                db.session.commit()
+            user = User(username=username,gender=gender, image_path=uploaded_file_path)
+            user.set_password(password)
+            db.session.add(user)
+            db.session.commit()
 
-                # asyncio.create_task(async_use_pipeline(data_dict))
+            # asyncio.create_task(async_use_pipeline(data_dict))
 
-                return jsonify({
-                    "status": 200,
-                    "message": "User created and image synthesis started successfully.",
-                    "data": user.to_dict()
-                }), 200
+            return jsonify({
+                "status": 200,
+                "message": "User created and image synthesis started successfully.",
+                "data": user.to_dict()
+            }), 200
         except Exception as e:
             print("4")
             print(e)
@@ -334,17 +334,23 @@ def get_users():
 
 @auth.route('/get-generated-images', methods=['GET'])
 def get_generated_images():
-    if 'user_id' not in session:
-        return jsonify({
-            "status": 401,
-            "error": "Unauthorized",
-            "message": "Need to login before accessing your product id"
-        }), 401
-    username = session['username']
-    gender=request.args.get('gender')
-    images = GeneratedImage.query.filter(username=username).all()
-    images_data = [image.to_dict() for image in images]
-    return jsonify(images_data), 200
+    try:
+        if 'username' not in session:
+            return jsonify({
+                "status": 401,
+                "error": "Unauthorized",
+                "message": "Need to login before accessing your product id"
+            }), 401
+        username = session['username']
+        images = GeneratedImage.query.filter_by(username=username)
+        images_data = [image.to_dict() for image in images]
+        return jsonify(images_data), 200
+    except Exception as e:
+            app_logger.exception("Error while fetching generated images", e)
+            return jsonify({
+                "status": 500,
+                "message": "Error while fetching information"
+            }), 400
 
 
 def filter_by_gender(list, gender):

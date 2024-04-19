@@ -8,15 +8,16 @@ from app.auth import auth as auth_blueprint
 
 def create_app():
     app = Flask(__name__)
-    
+    app.secret_key = os.getenv('SECRET_KEY')
+    print("app.secret_key",app.secret_key)
+
+
     print(os.getenv('FLASK_ENV'))
     if os.getenv('FLASK_ENV') == 'production':
         app.config.from_object(ProductionConfig)
     else:
         app.config.from_object(DevelopmentConfig)
 
-    app.secret_key = app.config['SECRET_KEY']
-    print("app.secret_key",app.secret_key)
 
     app.register_blueprint(main_blueprint)
     app.register_blueprint(auth_blueprint, url_prefix='/auth')

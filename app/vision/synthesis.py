@@ -101,7 +101,8 @@ class ImageSynthesiser:
                 ip_scale=1.0,
                 strength=0.99,
                 guidance_scale=7.5,
-                steps=100)
+                # TODO increase as per need default: 100
+                steps=2)
             app_logger.info(f"Image synthesis completed in {time() - starting4:.2f} seconds.")
             return result_image
         except Exception as e:
