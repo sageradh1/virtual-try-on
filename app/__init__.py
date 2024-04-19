@@ -15,6 +15,8 @@ def create_app():
     else:
         app.config.from_object(DevelopmentConfig)
 
+    app.secret_key = app.config['SECRET_KEY']
+
     app.register_blueprint(main_blueprint)
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
