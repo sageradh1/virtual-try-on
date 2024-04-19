@@ -217,7 +217,17 @@ def get_products():
 def protected_route():
     if 'username' not in session:
         abort(401)
-    return 'This is a protected route.'
+    else:
+        if request.method == 'GET':
+            return render_template('postloggedin/items.html')
+        
+@auth.route('/product-info',methods=['GET'])
+def product_info():
+    if 'user_id' not in session:
+        abort(401)
+    else:
+        if request.method == 'GET':
+            return render_template('postloggedin/productinfo.html')
 
 @auth.route("/logout",methods=['POST'])
 def logout():

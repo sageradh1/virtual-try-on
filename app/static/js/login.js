@@ -1,3 +1,5 @@
+var baseUrl = 'http://18.213.17.243:8081'
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
 
@@ -7,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(form);
 
         try {
-            const response = await fetch('login', {
+            const response = await fetch(`${baseUrl}/auth/login`, {
                 method: 'POST',
                 body: formData
             });
@@ -15,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
                 // Registration successful
                 console.log('Login successful');
-                window.location.href = '/'; // Redirect to homepage or any other page
+                window.location.href = '/auth/protected-route'; // Redirect to homepage or any other page
             } else {
                 // Registration failed
                 console.error('Login failed');
