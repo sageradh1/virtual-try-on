@@ -1,25 +1,24 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
-from app.extensions import db, migrate
+from config import DevelopmentConfig, ProductionConfig
+from app.extensions import db, migrate, synthesiser
 from app.main import main as main_blueprint
 from app.auth import auth as auth_blueprint
-from app.vision.synthesis import ImageSynthesiser
-from config import DevelopmentConfig, ProductionConfig
-from flask_migrate import Migrate
+# from celery import Celery
+# from .celery import make_celery
 
 
 def create_app():
     app = Flask(__name__)
-
+    
     print(os.getenv('FLASK_ENV'))
     if os.getenv('FLASK_ENV') == 'production':
         app.config.from_object(ProductionConfig)
     else:
         app.config.from_object(DevelopmentConfig)
 
-    app.secret_key = app.config['FLASK_SECRET_KEY']
-    app.config
+    # app.secret_key = app.config['FLASK_SECRET_KEY']
 
     app.register_blueprint(main_blueprint)
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
@@ -32,18 +31,18 @@ def create_app():
         print("Initialized the database.")
 
     migrate.init_app(app, db)
-    from app.auth.models import User
+    from app.auth.models import User,GeneratedImage
 
-    synthesiser = ImageSynthesiser()  # Create an instance of ImageSynthesiser
+    # synthesiser.preload()
 
-    @app.before_request
-    def preload_synthesiser():
-        # Preload the ImageSynthesiser during app startup
-        if not hasattr(app, '_got_first_request'):
-            synthesiser.preload()
-            app._got_first_request = True
+    # celery = Celery(app.import_name, backend=app.config['CELERY_RESULT_BACKEND'], broker=app.config['CELERY_BROKER_URL'])
+    # celery.conf.update(app.config)
+    # Initialize Celery
 
+    # app.config['CELERY_CONFIG']={"broker_url":"redis://redis","result_backend":"redis://redis"}
+    # celery_app = make_celery(app)
+    # celery_app.set_default()
+    app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+    app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
     return app
-
-# if __name__ == "__main__":
-#     app.run(host='0.0.0.0', port='5000', debug=True)
+    # return app, celery_app

@@ -23,3 +23,5 @@ migrations
 *.jpg
 *.jpeg
 *.png
+
+*.log

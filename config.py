@@ -12,9 +12,11 @@ load_dotenv(dotenv_path)
 class Config(object):
     UPLOADED_PHOTOS_DEST =  basedir+"/app/static/uploaded"
     GENERATED_PHOTOS_DEST =  basedir+"/app/static/generated"
+    CLOTHES_PHOTOS_DEST =  basedir+"/app/static/clothes"
+
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024 #max allowed video filesize is 16MB
     ALLOWED_PHOTO_EXTENSIONS = set(['jpg', 'jpeg', 'png'])
-    FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY')
+    SECRET_KEY = os.getenv('SECRET_KEY')
     API_KEY=os.getenv('API_KEY')
     DB_NAME = os.getenv('DB_NAME')
     DB_USERNAME = os.getenv('DB_USERNAME')
@@ -22,7 +24,8 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
     API_BASE_URL = "http://127.0.0.1:5000"
     FLASK_ENV = os.getenv('FLASK_ENV')
-
+    # CELERY_BROKER_URL = 'redis://localhost:6379/0'
+    # CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 class DevelopmentConfig(Config):
     DEBUG = True

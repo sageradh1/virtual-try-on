@@ -7,7 +7,6 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-flask = "^3.0.3"
 flask-sqlalchemy = "^3.1.1"
 flask-wtf = "^1.2.1"
 python-dotenv = "^1.0.1"
@@ -71,6 +70,10 @@ typing-extensions = {version = "4.11.0", allow-prereleases = true}
 urllib3 = {version = "2.2.1", allow-prereleases = true}
 wcwidth = {version = "0.2.13", allow-prereleases = true}
 zipp = {version = "3.18.1", allow-prereleases = true}
+flask = {extras = ["async"], version = "^3.0.3"}
+apscheduler = "3.10.1"
+celery = {extras = ["redis"], version = "^5.4.0"}
+redis = "^5.0.3"
 
 
 [tool.poetry.group.dev.dependencies]
