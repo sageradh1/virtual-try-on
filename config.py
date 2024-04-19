@@ -16,7 +16,7 @@ class Config(object):
 
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024 #max allowed video filesize is 16MB
     ALLOWED_PHOTO_EXTENSIONS = set(['jpg', 'jpeg', 'png'])
-    SECRET_KEY = os.getenv('SECRET_KEY')
+    FLASK_SECRET_KEY = os.getenv('FLASK_SECRET_KEY')
     API_KEY=os.getenv('API_KEY')
     DB_NAME = os.getenv('DB_NAME')
     DB_USERNAME = os.getenv('DB_USERNAME')
