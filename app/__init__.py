@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
 from config import DevelopmentConfig, ProductionConfig
-from app.extensions import db, migrate, synthesiser
+from app.extensions import db, migrate
 from app.main import main as main_blueprint
 from app.auth import auth as auth_blueprint
 
