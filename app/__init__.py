@@ -5,9 +5,6 @@ from config import DevelopmentConfig, ProductionConfig
 from app.extensions import db, migrate, synthesiser
 from app.main import main as main_blueprint
 from app.auth import auth as auth_blueprint
-# from celery import Celery
-# from .celery import make_celery
-
 
 def create_app():
     app = Flask(__name__)
@@ -17,8 +14,6 @@ def create_app():
         app.config.from_object(ProductionConfig)
     else:
         app.config.from_object(DevelopmentConfig)
-
-    # app.secret_key = app.config['FLASK_SECRET_KEY']
 
     app.register_blueprint(main_blueprint)
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
@@ -33,15 +28,8 @@ def create_app():
     migrate.init_app(app, db)
     from app.auth.models import User,GeneratedImage
 
-    # synthesiser.preload()
+    synthesiser.preload()
 
-    # celery = Celery(app.import_name, backend=app.config['CELERY_RESULT_BACKEND'], broker=app.config['CELERY_BROKER_URL'])
-    # celery.conf.update(app.config)
-    # Initialize Celery
-
-    # app.config['CELERY_CONFIG']={"broker_url":"redis://redis","result_backend":"redis://redis"}
-    # celery_app = make_celery(app)
-    # celery_app.set_default()
     app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
     app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
     return app
