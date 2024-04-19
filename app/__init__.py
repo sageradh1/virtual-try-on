@@ -10,7 +10,7 @@ def create_app():
     app = Flask(__name__, static_url_path='/static', static_folder='static')
     CORS(app, origins="*")
 
-    app.secret_key = os.getenv('SECRET_KEY')
+    app.secret_key = os.getenv('FLASK_SECRET_KEY')
     if os.getenv('FLASK_ENV') == 'production':
         app.config.from_object(ProductionConfig)
     else:
