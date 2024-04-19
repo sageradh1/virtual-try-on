@@ -9,7 +9,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from datetime import datetime
 
 from . import auth
-from app.extensions import background_synthesis_function, db, get_synthesiser, synthesiser
+from app.extensions import db, get_synthesiser, synthesiser
 from app.auth.models import GeneratedImage, User
 from app.logger import app_logger
 from app.auth.models import GeneratedImage
