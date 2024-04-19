@@ -10,9 +10,8 @@ from datetime import datetime
 
 from . import auth
 from app.extensions import db, get_synthesiser, synthesiser
-from app.auth.models import GeneratedImage, User
+from app.auth.models import GeneratedImage, User, products
 from app.logger import app_logger
-from app.auth.models import GeneratedImage
 from app.extensions import db
 
 background_tasks_queue = asyncio.Queue() 
@@ -30,134 +29,11 @@ def check_thread_status():
         thread_status = 'not running'
     return jsonify({'thread_status': thread_status})
 
-
-# Asynchronous function to use the object's pipeline
-async def async_use_pipeline(data_dict):
-    app_logger.info("Inside async_use_pipeline")
-    try:
-        clothes = [
-            f"{current_app.config['CLOTHES_PHOTOS_DEST']}/shirt.jpg"
-            # f"{current_app.config['CLOTHES_PHOTOS_DEST']}/suit.jpeg"
-        ]
-
-        tasks = []
-        for cloth in clothes:
-            data=dict()
-            data['person_image_path']=data_dict['person_image_path']
-            data['cloth_image_path']=cloth
-            
-            # result_image = loop.run_in_executor(None, synthesiser.produce_synthesized_image, data)
-            result_image = await synthesiser.produce_synthesized_image(data)
-
-            datetime_stamp = datetime.now().strftime("%Y%m%d%H%M%S")
-            new_generated_filename = f"{data_dict['uploaded_filename_ext']}_{datetime_stamp}{data_dict['uploaded_filename_ext']}"
-            generated_file_path = os.path.join(current_app.config['GENERATED_PHOTOS_DEST'], new_generated_filename)
-            result_image.save(generated_file_path)
-            generated_image = GeneratedImage(
-                username=data_dict['username'],
-                source_image=data_dict['person_image_path'],
-                generated_image_path=generated_file_path
-            )
-            db.session.add(generated_image)
-            db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        print("Issue while trying to generate new image")
-        app_logger.error("Error: Issue while trying to generate new image",e)
-        return jsonify({
-            "status": 400,
-            "message": "Could not create a user"
-        }), 400
-
-async def async_use_pipeline(data_dict):
-    app_logger.info("Inside async_use_pipeline")
-    try:
-        clothes = [
-            f"{current_app.config['CLOTHES_PHOTOS_DEST']}/shirt.jpg"
-            # f"{current_app.config['CLOTHES_PHOTOS_DEST']}/suit.jpeg"
-        ]
-
-        tasks = []
-        for cloth in clothes:
-            data = dict()
-            data['person_image_path'] = data_dict['person_image_path']
-            data['cloth_image_path'] = cloth
-
-            # Create a task for each image generation and store it
-            task = asyncio.create_task(synthesiser.produce_synthesized_image(data))
-            tasks.append(task)
-
-        for generated_image in tasks:
-            datetime_stamp = datetime.now().strftime("%Y%m%d%H%M%S")
-            new_generated_filename = f"{data_dict['uploaded_filename_ext']}_{datetime_stamp}{data_dict['uploaded_filename_ext']}"
-            generated_file_path = os.path.join(current_app.config['GENERATED_PHOTOS_DEST'], new_generated_filename)
-            generated_image.save(generated_file_path)
-
-            # Prepare data for background processing (optional)
-            background_data = {
-                'username': data_dict['username'],
-                'source_image_path': data_dict['person_image_path'],
-                'generated_image_path': generated_file_path
-            }
-
-            global background_tasks
-            background_tasks.append(background_data)
-
-    except Exception as e:
-        print("Error generating images:", e)
-        app_logger.error("Error", e)
-
-background_tasks = []
-
-async def handle_generated_image_background():
-    while True:
-        async with background_tasks_queue.get() as data:
-            try:
-                print(f"Processing generated image for user: {data['username']}")
-                generated_image = GeneratedImage(
-                    username=data['username'],
-                    source_image_path=data['source_image_path'],
-                    generated_image_path=data['generated_image_path']
-                )
-                db.session.add(generated_image)
-                db.session.commit()
-
-            except Exception as e:
-                print(f"Error processing image in background: {e}")
-
-products = [
-    {
-        "id":1,
-        "name": "Mens Shirt",
-        "filename": "mensshirt.jpg",
-        "gender": "M"
-    },
-     {
-        "id":2,
-        "name": "Mens Suit",
-        "filename": "menssuit.jpeg",
-        "gender": "M"
-    },
-     {
-        "id":3,
-        "name": "Lady Dress",
-        "filename": "ladiesdress.jpeg",
-        "gender": "F"
-    },
-     {
-        "id":4,
-        "name": "lady Long Coat",
-        "filename": "ladiescoat.jpg",
-        "gender": "F"
-    }
-    
-]
-
 @auth.route("/register-postman", methods=['GET', 'POST'])
 def register():
     global thread 
-    print("Registration started")
-    # db = get_db()
+    app_logger.info("Registration started")
+
     if request.method == 'POST':
         required_fields = ['username', 'password', 'image','gender']
         missing_fields = [field for field in required_fields if field not in request.form and field not in request.files]
@@ -181,8 +57,6 @@ def register():
                 "error": "Conflict",
                 "message": "A user with the provided username already exists."
             }), 409
-            flash('A user with that username already exists.', 'warning')
-            return render_template('auth/register.html')
 
         if not file:
             return jsonify({
@@ -205,7 +79,6 @@ def register():
                 "message": f"Please confirm that gender value is acceptable."
             }), 422
 
-
         datetime_stamp = datetime.now().strftime("%Y%m%d%H%M%S")
         uploaded_filename_base, uploaded_filename_ext = os.path.splitext(secure_filename(file.filename))
         new_uploaded_filename = f"{uploaded_filename_base}_{datetime_stamp}{uploaded_filename_ext}"
@@ -220,43 +93,19 @@ def register():
         data_dict['username']=username
         
         try:
-            # Processing one image for demo
-            # clothes = [
-            #     f"{current_app.config['CLOTHES_PHOTOS_DEST']}/shirt.jpg"
-            #     # f"{current_app.config['CLOTHES_PHOTOS_DEST']}/suit.jpeg"
-            #     # '/Users/sagar/working_dir/github_personal/virtual-try-on/app/static/clothes/shirt.jpg'
-            # ]
-
             for product in products:
                 if product['gender'] is not gender:
                     continue
-                print("Executed products", product)
                 data = dict()
-                print("product",product)
                 data['person_image_path'] = data_dict['person_image_path']
                 data['cloth_image_path'] = os.path.join(current_app.config['CLOTHES_PHOTOS_DEST'], product['filename'])
 
-                # Create a task for each image generation and store it
-                # generated_image= synthesiser.produce_synthesized_image(data)
                 generated_image = get_synthesiser().produce_synthesized_image(data)
-
-                # Wait for all image generation tasks to complete
-                # generated_images = await asyncio.gather(*tasks)
 
                 datetime_stamp = datetime.now().strftime("%Y%m%d%H%M%S")
                 new_generated_filename = f"{data_dict['uploaded_filename_base']}_{datetime_stamp}{data_dict['uploaded_filename_ext']}"
                 generated_file_path = os.path.join(current_app.config['GENERATED_PHOTOS_DEST'], new_generated_filename)
-                # generated_file_path = os.path.join('/Users/sagar/working_dir/github_personal/virtual-try-on/app/static/generated', new_generated_filename)
                 generated_image.save(generated_file_path)
-
-                    # Prepare data for background processing (optional)
-                background_data = {
-                    'username': data_dict['username'],
-                    'source_image_path': data_dict['person_image_path'],
-                    'generated_image_path': generated_file_path
-                }
-
-                from app.auth.models import GeneratedImage
 
                 generated_image = GeneratedImage(
                     username=data_dict['username'],
@@ -267,16 +116,10 @@ def register():
                 db.session.add(generated_image)
                 db.session.commit()
 
-
-
-                # background_synthesis_function.delay(data_dict=data_dict)
-
             user = User(username=username,gender=gender, image_path=uploaded_file_path)
             user.set_password(password)
             db.session.add(user)
             db.session.commit()
-
-            # asyncio.create_task(async_use_pipeline(data_dict))
 
             return jsonify({
                 "status": 200,
@@ -284,12 +127,11 @@ def register():
                 "data": user.to_dict()
             }), 200
         except Exception as e:
-            print("4")
-            print(e)
+            app_logger.exception("Error while trying to register an user", e)
             db.session.rollback()
             return jsonify({
                 "status": 400,
-                "message": "Could not create a user"
+                "message": "Could not create a user due to internal error. Please contact the administrator"
             }), 400
 
 
@@ -299,7 +141,6 @@ def login():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-
 
     user = User.query.filter_by(username=username).first()
     if not user:
@@ -352,7 +193,6 @@ def get_generated_images():
                 "message": "Error while fetching information"
             }), 400
 
-
 def filter_by_gender(list, gender):
     filtered_list = [obj for obj in list if obj.get("gender") == gender]
     return filtered_list
@@ -360,7 +200,6 @@ def filter_by_gender(list, gender):
 @auth.route('/get-products', methods=['GET'])
 def get_products():
     gender=request.args.get('gender')
-
     if not gender:
         return jsonify(products), 200
     if gender:
@@ -374,8 +213,6 @@ def get_products():
     filtered_list = [obj for obj in products if obj.get("gender") == gender]
     return filtered_list
 
-
-
 @auth.route('/protected-route',methods=['GET'])
 def protected_route():
     if 'username' not in session:
@@ -386,3 +223,97 @@ def protected_route():
 def logout():
     session.pop('username', None)
     return jsonify({"status": 200, "message": "Logged out successfully"}), 200
+
+########################################## Async functionality check for later on #############################################
+background_tasks = []
+
+async def async_use_pipeline(data_dict):
+    app_logger.info("Inside async_use_pipeline")
+    try:
+        clothes = [
+            f"{current_app.config['CLOTHES_PHOTOS_DEST']}/shirt.jpg"
+            f"{current_app.config['CLOTHES_PHOTOS_DEST']}/suit.jpeg"
+        ]
+
+        tasks = []
+        for cloth in clothes:
+            data=dict()
+            data['person_image_path']=data_dict['person_image_path']
+            data['cloth_image_path']=cloth
+            
+            # result_image = loop.run_in_executor(None, synthesiser.produce_synthesized_image, data)
+            result_image = await synthesiser.produce_synthesized_image(data)
+
+            datetime_stamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            new_generated_filename = f"{data_dict['uploaded_filename_ext']}_{datetime_stamp}{data_dict['uploaded_filename_ext']}"
+            generated_file_path = os.path.join(current_app.config['GENERATED_PHOTOS_DEST'], new_generated_filename)
+            result_image.save(generated_file_path)
+            generated_image = GeneratedImage(
+                username=data_dict['username'],
+                source_image=data_dict['person_image_path'],
+                generated_image_path=generated_file_path
+            )
+            db.session.add(generated_image)
+            db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        print("Issue while trying to generate new image")
+        app_logger.error("Error: Issue while trying to generate new image",e)
+        return jsonify({
+            "status": 400,
+            "message": "Could not create a user"
+        }), 400
+    
+async def handle_generated_image_background():
+    while True:
+        async with background_tasks_queue.get() as data:
+            try:
+                print(f"Processing generated image for user: {data['username']}")
+                generated_image = GeneratedImage(
+                    username=data['username'],
+                    source_image_path=data['source_image_path'],
+                    generated_image_path=data['generated_image_path']
+                )
+                db.session.add(generated_image)
+                db.session.commit()
+
+            except Exception as e:
+                print(f"Error processing image in background: {e}")
+
+async def async_use_pipeline(data_dict):
+    app_logger.info("Inside async_use_pipeline")
+    try:
+        clothes = [
+            f"{current_app.config['CLOTHES_PHOTOS_DEST']}/shirt.jpg"
+            # f"{current_app.config['CLOTHES_PHOTOS_DEST']}/suit.jpeg"
+        ]
+
+        tasks = []
+        for cloth in clothes:
+            data = dict()
+            data['person_image_path'] = data_dict['person_image_path']
+            data['cloth_image_path'] = cloth
+
+            task = asyncio.create_task(synthesiser.produce_synthesized_image(data))
+            tasks.append(task)
+
+        for generated_image in tasks:
+            datetime_stamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            new_generated_filename = f"{data_dict['uploaded_filename_ext']}_{datetime_stamp}{data_dict['uploaded_filename_ext']}"
+            generated_file_path = os.path.join(current_app.config['GENERATED_PHOTOS_DEST'], new_generated_filename)
+            generated_image.save(generated_file_path)
+
+            background_data = {
+                'username': data_dict['username'],
+                'source_image_path': data_dict['person_image_path'],
+                'generated_image_path': generated_file_path
+            }
+
+            global background_tasks
+            background_tasks.append(background_data)
+
+    except Exception as e:
+        print("Error generating images:", e)
+        app_logger.error("Error", e)
+
+

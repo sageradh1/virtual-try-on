@@ -9,10 +9,6 @@ from app.auth import auth as auth_blueprint
 def create_app():
     app = Flask(__name__)
     app.secret_key = os.getenv('SECRET_KEY')
-    print("app.secret_key",app.secret_key)
-
-
-    print(os.getenv('FLASK_ENV'))
     if os.getenv('FLASK_ENV') == 'production':
         app.config.from_object(ProductionConfig)
     else:
@@ -32,9 +28,6 @@ def create_app():
     migrate.init_app(app, db)
     from app.auth.models import User,GeneratedImage
 
-    # synthesiser.preload()
-
-    app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
-    app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+    # app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+    # app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
     return app
-    # return app, celery_app

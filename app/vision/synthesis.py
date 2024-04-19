@@ -84,11 +84,6 @@ class ImageSynthesiser:
         try:
             person_image_path = data['person_image_path']
             cloth_image_path = data['cloth_image_path']
-
-            print("data",data)
-            print("person_image_path",person_image_path)
-            print("cloth_image_path",cloth_image_path)
-
             starting4 = time()
             app_logger.info("Synthesis Function started")
             person_image = load_image(person_image_path)
@@ -101,10 +96,8 @@ class ImageSynthesiser:
                 ip_scale=1.0,
                 strength=0.99,
                 guidance_scale=7.5,
-                # TODO increase as per need default: 100
                 steps=100)
             app_logger.info(f"Image synthesis completed in {time() - starting4:.2f} seconds.")
             return result_image
         except Exception as e:
-            print("Error while trying to produce image", e)
-            app_logger.error("Error while trying to produce image", e)
+            app_logger.exception("Error while trying to produce image", e)

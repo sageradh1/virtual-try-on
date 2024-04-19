@@ -24,8 +24,6 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
     API_BASE_URL = "http://127.0.0.1:5000"
     FLASK_ENV = os.getenv('FLASK_ENV')
-    # CELERY_BROKER_URL = 'redis://localhost:6379/0'
-    # CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 class DevelopmentConfig(Config):
     DEBUG = True

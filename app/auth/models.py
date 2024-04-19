@@ -37,3 +37,32 @@ class GeneratedImage(db.Model):
             "source_image_path": self.source_image_path,
             "generated_image_path": self.generated_image_path
         }
+    
+# TODO create db table for dynamic  functionality
+products = [
+    {
+        "id":1,
+        "name": "Mens Shirt",
+        "filename": "mensshirt.jpg",
+        "gender": "M"
+    },
+     {
+        "id":2,
+        "name": "Mens Suit",
+        "filename": "menssuit.jpeg",
+        "gender": "M"
+    },
+     {
+        "id":3,
+        "name": "Lady Dress",
+        "filename": "ladiesdress.jpeg",
+        "gender": "F"
+    },
+     {
+        "id":4,
+        "name": "lady Long Coat",
+        "filename": "ladiescoat.jpg",
+        "gender": "F"
+    }
+    
+]
