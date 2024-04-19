@@ -206,9 +206,9 @@ def register():
                 # generated_images = await asyncio.gather(*tasks)
 
                 datetime_stamp = datetime.now().strftime("%Y%m%d%H%M%S")
-                new_generated_filename = f"{data_dict['uploaded_filename_ext']}_{datetime_stamp}{data_dict['uploaded_filename_ext']}"
-                # generated_file_path = os.path.join(current_app.config['GENERATED_PHOTOS_DEST'], new_generated_filename)
-                generated_file_path = os.path.join('/Users/sagar/working_dir/github_personal/virtual-try-on/app/static/generated', new_generated_filename)
+                new_generated_filename = f"{data_dict['uploaded_filename_base']}_{datetime_stamp}{data_dict['uploaded_filename_ext']}"
+                generated_file_path = os.path.join(current_app.config['GENERATED_PHOTOS_DEST'], new_generated_filename)
+                # generated_file_path = os.path.join('/Users/sagar/working_dir/github_personal/virtual-try-on/app/static/generated', new_generated_filename)
                 generated_image.save(generated_file_path)
 
                     # Prepare data for background processing (optional)
