@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Display</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container3 {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 20px auto;
+            max-width: 1200px;
+            background-color: #f4f4f4;
+        }
+        .product-wrapper {
+            flex: 1;
+            display: flex;
+            margin: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .product-image {
+            flex: 1;
+            padding: 20px;
+        }
+        .product-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .product-details {
+            flex: 1;
+            padding: 20px;
+        }
+        .product-details h2 {
+            font-size: 24px;
+            margin-top: 0;
+        }
+        .product-details p {
+            font-size: 16px;
+            color: #555;
+        }
+        .product-details .price {
+            font-weight: bold;
+            color: #333;
+        }
+        .try-on {
+            display: block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .try-on:hover {
+            background-color: #45a049;
+        }
+        .colors {
+            margin-top: 20px;
+        }
+        .color {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid #ddd;
+            cursor: pointer;
+        }
+        .color:hover {
+            border-color: #666;
+        }
+        .related-products {
+            flex: 1;
+            background-color: #fff;
+            padding: 20px;
+        }
+        .related-products h3 {
+            font-size: 20px;
+            margin-top: 0;
+        }
+        .related-product {
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 20px;
+        }
+        .related-product img {
+            width: 100px;
+            height: auto;
+            border-radius: 5px;
+            margin-right: 20px;
+        }
+        .related-product h4 {
+            font-size: 18px;
+            margin-top: 0;
+        }
+        .related-product .price {
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="3">
+    <div class="product-wrapper">
+        <div class="product-image">
+            <img src="https://via.placeholder.com/400" alt="Product Image">
+        </div>
+        <div class="product-details">
+            <h2>Product Name</h2>
+            <p>Description of the product goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <p class="price">Price: $10</p>
+            <a href="#" class="try-on">Try On</a>
+            <div class="colors">
+                <span class="color" style="background-color: #ff0000;"></span>
+                <span class="color" style="background-color: #00ff00;"></span>
+                <span class="color" style="background-color: #0000ff;"></span>
+            </div>
+        </div>
+    </div>
+    <div class="dialog-box" id="try-on-dialog">
+        <div class="dialog-content">
+            <img id="try-on-image" src="" alt="Try-on Image">
+            <button onclick="closeDialog()">Close</button>
+        </div>
+    </div>
+    <div class="related-products">
+        <h3>Related Products</h3>
+        <div class="related-product">
+            <img src="https://via.placeholder.com/100" alt="Related Product Image">
+            <div>
+                <h4>Related Product 1</h4>
+                <p class="price">Price: $20</p>
+            </div>
+        </div>
+        <div class="related-product">
+            <img src="https://via.placeholder.com/100" alt="Related Product Image">
+            <div>
+                <h4>Related Product 2</h4>
+                <p class="price">Price: $30</p>
+            </div>
+        </div>
+        <div class="related-product">
+            <img src="https://via.placeholder.com/100" alt="Related Product Image">
+            <div>
+                <h4>Related Product 3</h4>
+                <p class="price">Price: $40</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function toggleDetails() {
+        var details = document.getElementById("product-details");
+        details.classList.toggle("active");
+    }
+    // JavaScript to handle the dialog box functionality
+    const tryOnButtons = document.querySelectorAll('.try-on');
+    const dialogBox = document.getElementById('try-on-dialog');
+    const tryOnImage = document.getElementById('try-on-image');
+
+    tryOnButtons.forEach(button => {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            const productImage = this.parentNode.querySelector('img').src;
+            tryOnImage.src = productImage;
+            showDialog();
+        });
+    });
+
+    function showDialog() {
+        dialogBox.style.display = 'flex';
+    }
+
+    function closeDialog() {
+        dialogBox.style.display = 'none';
+    }
+</script>
+</body>
+</html>

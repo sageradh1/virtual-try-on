@@ -1,3 +1,5 @@
+var baseUrl = 'http://18.213.17.243:8081'
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
 
@@ -7,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(form);
 
         try {
-            const response = await fetch('register', {
+            const response = await fetch(`${baseUrl}/auth/register`, {
                 method: 'POST',
                 body: formData
             });

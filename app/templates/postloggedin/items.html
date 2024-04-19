@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecommerce Store</title>
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='stylesheets/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Additional CSS for dialog box */
+        .dialog-box {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .dialog-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo-container">
+            <img src="{{ url_for('static',filename='assets/MirrorStyle_logo.png') }}" alt="MirrorStyle Logo">
+            <a href="/">MirrorStyle</a>
+        </div>
+        <ul>
+            <li style="float: right;"><a href="auth/login">Login</a></li>
+            <li style="float: right;"><a href="auth/register">Signup</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <div class="product">
+            <a href="/auth/product-info"><img src="https://via.placeholder.com/200" alt="Product 1"></a>
+            <h2>Product 1</h2>
+            <p>Description of Product 1.</p>
+            <p>Price: $10</p>
+            <a href="#" class="btn try-on">Try-on</a>
+        </div>
+        <div class="product">
+            <a href="/auth/product-info"><img src="https://via.placeholder.com/200" alt="Product 2"></a>
+            <h2>Product 2</h2>
+            <p>Description of Product 2.</p>
+            <p>Price: $20</p>
+            <a href="#" class="btn try-on">Try-on</a>
+        </div>
+        <div class="product">
+            <a href="/auth/product-info"></a><img src="https://via.placeholder.com/200" alt="Product 3"></a>
+            <h2>Product 3</h2>
+            <p>Description of Product 3.</p>
+            <p>Price: $30</p>
+            <a href="#" class="btn try-on">Try-on</a>
+        </div>
+        <!-- Add more product listings here -->
+    </div>
+
+    <!-- Dialog box for try-on -->
+    <div class="dialog-box" id="try-on-dialog">
+        <div class="dialog-content">
+            <img id="try-on-image" src="" alt="Try-on Image">
+            <button onclick="closeDialog()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to handle the dialog box functionality
+        const tryOnButtons = document.querySelectorAll('.try-on');
+        const dialogBox = document.getElementById('try-on-dialog');
+        const tryOnImage = document.getElementById('try-on-image');
+
+        tryOnButtons.forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault();
+                const productImage = this.parentNode.querySelector('img').src;
+                tryOnImage.src = productImage;
+                showDialog();
+            });
+        });
+
+        function showDialog() {
+            dialogBox.style.display = 'flex';
+        }
+
+        function closeDialog() {
+            dialogBox.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
+
