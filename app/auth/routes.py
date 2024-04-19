@@ -9,7 +9,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from datetime import datetime
 
 from . import auth
-from app.extensions import background_synthesis_function, db, synthesiser
+from app.extensions import background_synthesis_function, db, get_synthesiser, synthesiser
 from app.auth.models import GeneratedImage, User
 from app.logger import app_logger
 from app.auth.models import GeneratedImage
@@ -198,7 +198,8 @@ def register():
                 data['cloth_image_path'] = cloth
 
                 # Create a task for each image generation and store it
-                generated_image= synthesiser.produce_synthesized_image(data)
+                # generated_image= synthesiser.produce_synthesized_image(data)
+                generated_image = get_synthesiser().produce_synthesized_image(data)
 
                 # Wait for all image generation tasks to complete
                 # generated_images = await asyncio.gather(*tasks)
@@ -235,7 +236,7 @@ def register():
                 db.session.add(user)
                 db.session.commit()
 
-                asyncio.create_task(async_use_pipeline(data_dict))
+                # asyncio.create_task(async_use_pipeline(data_dict))
 
                 return jsonify({
                     "status": 200,
