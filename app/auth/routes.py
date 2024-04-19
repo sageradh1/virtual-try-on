@@ -176,6 +176,7 @@ def register():
         uploaded_filename_base, uploaded_filename_ext = os.path.splitext(secure_filename(file.filename))
         new_uploaded_filename = f"{uploaded_filename_base}_{datetime_stamp}{uploaded_filename_ext}"
         uploaded_file_path = os.path.join(current_app.config['UPLOADED_PHOTOS_DEST'], new_uploaded_filename)
+        print("uploaded_file_path",uploaded_file_path)
         file.save(uploaded_file_path)
         
         data_dict = dict()
