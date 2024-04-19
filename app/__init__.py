@@ -1,22 +1,20 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
+from config import DevelopmentConfig, ProductionConfig
 from app.extensions import db, migrate
 from app.main import main as main_blueprint
 from app.auth import auth as auth_blueprint
-from config import DevelopmentConfig, ProductionConfig
-from flask_migrate import Migrate
-
 
 def create_app():
     app = Flask(__name__, static_url_path='/static', static_folder='static')
 
+    app.secret_key = os.getenv('SECRET_KEY')
     if os.getenv('FLASK_ENV') == 'production':
         app.config.from_object(ProductionConfig)
     else:
         app.config.from_object(DevelopmentConfig)
 
-    app.secret_key = app.config['FLASK_SECRET_KEY']
 
     app.register_blueprint(main_blueprint)
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
@@ -29,9 +27,8 @@ def create_app():
         print("Initialized the database.")
 
     migrate.init_app(app, db)
-    from app.auth.models import User
+    from app.auth.models import User,GeneratedImage
 
+    # app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
+    # app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
     return app
-
-# if __name__ == "__main__":
-#     app.run(host='0.0.0.0', port='5000', debug=True)

@@ -1,0 +1,31 @@
+services:
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.compose
+    environment:
+      FLASK_APP: run
+      FLASK_DEBUG: 1
+    volumes:
+      - .:/vto
+    command: flask run -h 0.0.0.0 -p 8081
+    ports:
+      - 8081:8081
+
+
+  celery:
+    build:
+        context: .
+        dockerfile: Dockerfile.compose
+    environment:
+      FLASK_APP: run
+    volumes:
+      - .:/vto
+    command: celery -A run.celery worker --loglevel=info
+    depends_on:
+      - redis
