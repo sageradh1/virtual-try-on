@@ -23,5 +23,7 @@ migrations
 *.jpg
 *.jpeg
 *.png
+!clothes/*.jpg
+!clothes/*.jpeg
 
 *.log
