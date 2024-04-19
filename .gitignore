@@ -22,9 +22,10 @@ migrations
 
 *.jpg
 *.jpeg
-# *.png
+*.png
 !app/static/clothes/*.jpg
 !app/static/clothes/*.jpeg
+!app/static/clothes/*.png
 
 *.log
 
