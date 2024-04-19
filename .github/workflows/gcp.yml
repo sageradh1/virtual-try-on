@@ -2,52 +2,53 @@ name: Build and Push Flask App Image to Google Cloud Platform
 on:
   push:
     branches: [main]
+
 jobs:
   build-push-gcr:
     name: Build and Push to GCP
     runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME: virtual-tryon
-      PROJECT_ID: virtual-try-on-420019
 
-    # Add "id-token" with the intended permissions.
-    permissions:
-      contents: 'read'
-      id-token: 'write'
+    env:
+      IMAGE_NAME: vto-docker-image-latest
+      PROJECT_ID: virtual-try-on-420112
+      LOCATION: northamerica-northeast2-docker.pkg.dev
+      CLOUD_RUN_SERVICE: vto-docker-image-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - id: 'auth'
-      uses: 'google-github-actions/auth@v2'
+    - name: Configure GCP credentials
+      id: auth
+      uses: google-github-actions/auth@v2
       with:
-        workload_identity_provider: 'projects/334629917966/locations/global/workloadIdentityPools/vto-pool/providers/vto-github'
-        service_account: 'github-actions@virtual-try-on-420019.iam.gserviceaccount.com'
+        credentials_json: "${{ secrets.VTO_SECRETS }}"
 
     - name: 'Set up Cloud SDK'
       uses: 'google-github-actions/setup-gcloud@v2'
-
-    - name: 'Use gcloud CLI'
-      run: 'gcloud info'
-
-    - id: 'gcloud'
-      name: 'gcloud'
-      run: |-
-        gcloud secrets versions access "latest" --secret "my-secret"
   
+    - name: 'Use gcloud CLI'
+      run: 'gcloud auth list --filter=status:ACTIVE --format="value(account)"'
+
     - name: Build Docker Image
-      run: docker build -t $IMAGE_NAME:latest ./vto
+      run: docker build -t $IMAGE_NAME:latest .
 
     - name: Configure Docker Client
-      run: |-
-        gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+      run: gcloud auth configure-docker $LOCATION --quiet
 
     - name: Push Docker Image to Artifact Registry
       env:
         GIT_TAG: v0.1.0
-      run: |-
-        docker tag $IMAGE_NAME:latest us-central1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:latest
-        docker tag $IMAGE_NAME:latest us-central1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:$GIT_TAG
-        docker push us-central1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:latest
-        docker push us-central1-docker.pkg.dev/$PROJECT_ID/$IMAGE_NAME:$GIT_TAG
+      run: |
+        docker tag $IMAGE_NAME:latest $LOCATION/$PROJECT_ID/vto-artifact/$IMAGE_NAME:latest
+        docker tag $IMAGE_NAME:latest $LOCATION/$PROJECT_ID/vto-artifact/$IMAGE_NAME:$GIT_TAG
+        docker push $LOCATION/$PROJECT_ID/vto-artifact/$IMAGE_NAME:latest
+        docker push $LOCATION/$PROJECT_ID/vto-artifact/$IMAGE_NAME:$GIT_TAG
+
+    - name: Deploy and Update Traffic
+      run: |
+        gcloud run deploy vto-docker-image-latest \
+        --image=northamerica-northeast2-docker.pkg.dev/virtual-try-on-420112/vto-artifact/vto-docker-image-latest \
+        --region=northamerica-northeast2 \
+        --project=virtual-try-on-420112 \
+        && gcloud run services update-traffic vto-docker-image-latest --to-latest --region=northamerica-northeast2

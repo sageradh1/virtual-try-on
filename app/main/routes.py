@@ -1,6 +1,11 @@
-from flask import render_template
+from flask import jsonify, render_template
 from . import main
+from app.logger import app_logger
 
-@main.route('/')
+@main.route('/health-check', methods=['GET'])
 def index():
-    return render_template('main/index.html')
+    app_logger.info("Health-check")
+    return jsonify({
+        "status": 200,
+        "message": "success"
+    })

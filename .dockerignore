@@ -9,11 +9,11 @@ __pycache__
 # Exclude local development files and directories
 venv
 .virtualenv
-.env
-*.env
+# .env
+# *.env
 
 # Exclude temporary files
-*.log
+# *.log
 *.tmp
 *.swp
 
@@ -25,3 +25,6 @@ static/generated/*.png
 static/uploaded/*.jpg
 static/uploaded/*.jpeg
 static/uploaded/*.png
+
+
+extra-folder
