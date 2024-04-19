@@ -137,32 +137,40 @@ def register():
 
 @auth.route("/login", methods=['POST'])
 def login():
-    db = get_db()
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
+    try:
+        db = get_db()
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
 
-    user = User.query.filter_by(username=username).first()
-    if not user:
-        return jsonify({
-            "status": 404,
-            "error": "Not Found",
-            "message": "User not found."
-        }), 404
+        user = User.query.filter_by(username=username).first()
+        if not user:
+            return jsonify({
+                "status": 404,
+                "error": "Not Found",
+                "message": "User not found."
+            }), 404
 
-    if user and check_password_hash(user.password_hash, password):
-        session['username'] = user.username
+        if user and check_password_hash(user.password_hash, password):
+            session['username'] = user.username
+            return jsonify({
+                "status": 200,
+                "message": "Login successful",
+                "data": user.to_dict()    
+            }), 200
+        else:
+            return jsonify({
+                "status": 401,
+                "error": "Unauthorized",
+                "message": "Invalid username or password."
+            }), 401
+    except Exception as e:
+        app_logger.exception("Error while trying to register an user", e)
+        db.session.rollback()
         return jsonify({
-            "status": 200,
-            "message": "Login successful",
-            "data": user.to_dict()    
-        }), 200
-    else:
-        return jsonify({
-            "status": 401,
-            "error": "Unauthorized",
-            "message": "Invalid username or password."
-        }), 401
+            "status": 400,
+            "message": "Could not login. Please contact the administrator"
+        }), 400
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'png', 'jpg', 'jpeg'}
