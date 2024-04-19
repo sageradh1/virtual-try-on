@@ -27,3 +27,5 @@ migrations
 !app/static/clothes/*.jpeg
 
 *.log
+
+app/*.zip
