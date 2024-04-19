@@ -106,3 +106,5 @@ source /Users/<user>/.pyenv/versions/3.10.12/envs/vto-2/bin/activate
 
 deactivate
 ``` 
+export PATH=/Users/sagar/.pyenv/versions/3.10.12/envs/vto-2/bin:$PATH
+source /Users/sagar/.pyenv/versions/3.10.12/envs/vto-2/bin/activate

@@ -31,9 +31,6 @@ def check_thread_status():
     return jsonify({'thread_status': thread_status})
 
 
-
-
-
 # Asynchronous function to use the object's pipeline
 async def async_use_pipeline(data_dict):
     app_logger.info("Inside async_use_pipeline")
@@ -113,7 +110,6 @@ async def async_use_pipeline(data_dict):
         print("Error generating images:", e)
         app_logger.error("Error", e)
 
-# Assuming a global list to store background processing data (replace with queue/message broker)
 background_tasks = []
 
 async def handle_generated_image_background():
@@ -202,7 +198,7 @@ def register():
                 data['cloth_image_path'] = cloth
 
                 # Create a task for each image generation and store it
-                generated_image=synthesiser.produce_synthesized_image(data)
+                generated_image= synthesiser.produce_synthesized_image(data)
 
                 # Wait for all image generation tasks to complete
                 # generated_images = await asyncio.gather(*tasks)

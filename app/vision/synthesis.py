@@ -41,7 +41,7 @@ class ImageSynthesiser:
             app_logger.info("Using MPS (GPU acceleration enabled on macOS).....")
             print("Using MPS (GPU acceleration enabled on macOS)")
         elif torch.cuda.is_available():
-            device = torch.device("cuda:0")
+            device = torch.device("cuda")
             app_logger.info("Using CUDA on Linux (GPU acceleration enabled)....")
         else:
             device = torch.device("cpu")
