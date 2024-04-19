@@ -23,13 +23,13 @@ class User(db.Model):
 class GeneratedImage(db.Model):
     id = db.Column(db.Integer, primary_key=True,index=True)
     username = db.Column(db.Integer)
-    source_image = db.Column(db.String())
+    source_image_path = db.Column(db.String())
     generated_image_path = db.Column(db.String())
 
     def to_dict(self):
         return {
             "id": self.id,
             "username": self.username,
-            "source_image": self.source_image,
+            "source_image_path": self.source_image_path,
             "generated_image_path": self.generated_image_path
         }
