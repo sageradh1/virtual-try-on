@@ -9,7 +9,5 @@ port = int(os.getenv("PORT", 8081))
 app = create_app()
 
 if __name__ == '__main__':
-    print("host",host)
-    print("port",port)
     app.run(host=host, port=port, use_reloader=False)
 #     celery.start()
