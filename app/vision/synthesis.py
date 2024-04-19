@@ -85,6 +85,10 @@ class ImageSynthesiser:
             person_image_path = data['person_image_path']
             cloth_image_path = data['cloth_image_path']
 
+            print("data",data)
+            print("person_image_path",person_image_path)
+            print("cloth_image_path",cloth_image_path)
+
             starting4 = time()
             app_logger.info("Synthesis Function started")
             person_image = load_image(person_image_path)
