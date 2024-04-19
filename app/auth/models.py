@@ -2,10 +2,11 @@ from app.extensions import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, index=True )
     username = db.Column(db.String(64), unique=True, index=True)
     password_hash = db.Column(db.String(128))
     image_path = db.Column(db.String(120), nullable=True)
+    gender = db.Column(db.String())
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -17,5 +18,51 @@ class User(db.Model):
         return {
             "id": self.id,
             "username": self.username,
+            "gender": self.gender,
             "image_path": self.image_path
         }
+
+class GeneratedImage(db.Model):
+    id = db.Column(db.Integer, primary_key=True,index=True)
+    product_id = db.Column(db.Integer)
+    username = db.Column(db.String())
+    source_image_path = db.Column(db.String())
+    generated_image_path = db.Column(db.String())
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "product_id": self.product_id,
+            "source_image_path": self.source_image_path,
+            "generated_image_path": self.generated_image_path
+        }
+    
+# TODO create db table for dynamic  functionality
+products = [
+    {
+        "id":1,
+        "name": "Mens Shirt",
+        "filename": "mensshirt.jpg",
+        "gender": "M"
+    },
+     {
+        "id":2,
+        "name": "Mens Suit",
+        "filename": "menssuit.jpeg",
+        "gender": "M"
+    },
+     {
+        "id":3,
+        "name": "Lady Dress",
+        "filename": "ladiesdress.jpeg",
+        "gender": "F"
+    },
+     {
+        "id":4,
+        "name": "lady Long Coat",
+        "filename": "ladiescoat.jpg",
+        "gender": "F"
+    }
+    
+]
