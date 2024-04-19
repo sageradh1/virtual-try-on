@@ -13,6 +13,7 @@ synthesiser.preload()
 def get_synthesiser():
     return synthesiser
 
+
 # celery_app = Celery('vto_celery',backend='redis://localhost', broker='redis://localhost')
 
 # @celery_app.task

@@ -40,9 +40,6 @@ async def async_use_pipeline(data_dict):
             # f"{current_app.config['CLOTHES_PHOTOS_DEST']}/suit.jpeg"
         ]
 
-        # loop = asyncio.new_event_loop()
-        # asyncio.set_event_loop(loop)
-        # db = get_db()
         tasks = []
         for cloth in clothes:
             data=dict()
@@ -128,6 +125,33 @@ async def handle_generated_image_background():
             except Exception as e:
                 print(f"Error processing image in background: {e}")
 
+products = [
+    {
+        "id":1,
+        "name": "Mens Shirt",
+        "filename": "mensshirt.jpg",
+        "gender": "M"
+    },
+     {
+        "id":2,
+        "name": "Mens Suit",
+        "filename": "menssuit.jpeg",
+        "gender": "M"
+    },
+     {
+        "id":3,
+        "name": "Lady Dress",
+        "filename": "ladiesdress.jpeg",
+        "gender": "F"
+    },
+     {
+        "id":4,
+        "name": "lady Long Coat",
+        "filename": "ladiescoat.jpg",
+        "gender": "F"
+    }
+    
+]
 
 @auth.route("/register-postman", methods=['GET', 'POST'])
 def register():
@@ -135,7 +159,7 @@ def register():
     print("Registration started")
     # db = get_db()
     if request.method == 'POST':
-        required_fields = ['username', 'password', 'image']
+        required_fields = ['username', 'password', 'image','gender']
         missing_fields = [field for field in required_fields if field not in request.form and field not in request.files]
 
         if missing_fields:
@@ -147,6 +171,8 @@ def register():
 
         username = request.form['username']
         password = request.form['password']
+        gender = request.form['gender']
+        gender.capitalize()
         file = request.files['image']
         
         user_exists = User.query.filter_by(username=username).first()
@@ -171,6 +197,14 @@ def register():
                 "error": "Bad request",
                 "message": f"Please confirm that image file is in the right format."
             }), 422
+        
+        if gender not in ["M","F"]:
+            return jsonify({
+                "status": 422,
+                "error": "Bad request",
+                "message": f"Please confirm that gender value is acceptable."
+            }), 422
+
 
         datetime_stamp = datetime.now().strftime("%Y%m%d%H%M%S")
         uploaded_filename_base, uploaded_filename_ext = os.path.splitext(secure_filename(file.filename))
@@ -187,16 +221,20 @@ def register():
         
         try:
             # Processing one image for demo
-            clothes = [
-                f"{current_app.config['CLOTHES_PHOTOS_DEST']}/shirt.jpg"
-                # f"{current_app.config['CLOTHES_PHOTOS_DEST']}/suit.jpeg"
-                # '/Users/sagar/working_dir/github_personal/virtual-try-on/app/static/clothes/shirt.jpg'
-            ]
+            # clothes = [
+            #     f"{current_app.config['CLOTHES_PHOTOS_DEST']}/shirt.jpg"
+            #     # f"{current_app.config['CLOTHES_PHOTOS_DEST']}/suit.jpeg"
+            #     # '/Users/sagar/working_dir/github_personal/virtual-try-on/app/static/clothes/shirt.jpg'
+            # ]
 
-            for cloth in clothes:
+            for product in products:
+                if product['gender'] is not gender:
+                    continue
+                print("Executed products", product)
                 data = dict()
+                print("product",product)
                 data['person_image_path'] = data_dict['person_image_path']
-                data['cloth_image_path'] = cloth
+                data['cloth_image_path'] = os.path.join(current_app.config['CLOTHES_PHOTOS_DEST'], product['filename'])
 
                 # Create a task for each image generation and store it
                 # generated_image= synthesiser.produce_synthesized_image(data)
@@ -222,6 +260,7 @@ def register():
 
                 generated_image = GeneratedImage(
                     username=data_dict['username'],
+                    product_id=product['id'],
                     source_image_path=data_dict['person_image_path'],
                     generated_image_path=generated_file_path
                 )
@@ -232,7 +271,7 @@ def register():
 
                 # background_synthesis_function.delay(data_dict=data_dict)
 
-                user = User(username=username, image_path=uploaded_file_path)
+                user = User(username=username,gender=gender, image_path=uploaded_file_path)
                 user.set_password(password)
                 db.session.add(user)
                 db.session.commit()
@@ -271,7 +310,7 @@ def login():
         }), 404
 
     if user and check_password_hash(user.password_hash, password):
-        session['user_id'] = user.id
+        session['username'] = user.username
         return jsonify({
             "status": 200,
             "message": "Login successful",
@@ -295,17 +334,49 @@ def get_users():
 
 @auth.route('/get-generated-images', methods=['GET'])
 def get_generated_images():
-    images = GeneratedImage.query.all()
+    if 'user_id' not in session:
+        return jsonify({
+            "status": 401,
+            "error": "Unauthorized",
+            "message": "Need to login before accessing your product id"
+        }), 401
+    username = session['username']
+    gender=request.args.get('gender')
+    images = GeneratedImage.query.filter(username=username).all()
     images_data = [image.to_dict() for image in images]
     return jsonify(images_data), 200
 
+
+def filter_by_gender(list, gender):
+    filtered_list = [obj for obj in list if obj.get("gender") == gender]
+    return filtered_list
+
+@auth.route('/get-products', methods=['GET'])
+def get_products():
+    gender=request.args.get('gender')
+
+    if not gender:
+        return jsonify(products), 200
+    if gender:
+        gender.capitalize()
+        if gender not in ["M","F"]:
+            return jsonify({
+                "status": 422,
+                "error": "Bad request",
+                "message": f"Please confirm that gender value is acceptable."
+            }), 422
+    filtered_list = [obj for obj in products if obj.get("gender") == gender]
+    return filtered_list
+
+
+
 @auth.route('/protected-route',methods=['GET'])
 def protected_route():
-    if 'user_id' not in session:
+    if 'username' not in session:
         abort(401)
     return 'This is a protected route.'
 
 @auth.route("/logout",methods=['POST'])
 def logout():
-    session.pop('user_id', None)
+    session.pop('username', None)
     return jsonify({"status": 200, "message": "Logged out successfully"}), 200
