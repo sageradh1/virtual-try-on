@@ -32,4 +32,4 @@ COPY . .
 # COPY .env.sample .env.sample
 
 # Run run.py when the container launches
-ENTRYPOINT ["flask", "run", "--host=0.0.0.0", "--port=8081"]
+ENTRYPOINT ["flask", "run", "--host=0.0.0.0", "--port=8080"]

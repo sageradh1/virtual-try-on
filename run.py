@@ -5,7 +5,7 @@ import os
 load_dotenv()
 
 host = os.getenv("HOST", "127.0.0.1")
-port = int(os.getenv("PORT", 8081))
+port = int(os.getenv("PORT", 8080))
 app = create_app()
 
 if __name__ == '__main__':
