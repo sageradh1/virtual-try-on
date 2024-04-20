@@ -14,7 +14,7 @@
 # RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 # Stage 2: Production stage
-FROM python:3.10-slim
+FROM python:3.10
 
 # Set the working directory to /app
 WORKDIR /app
@@ -26,7 +26,6 @@ COPY requirements.txt .
 
 RUN apt-get update && apt-get install -y gcc g++
 RUN pip install --upgrade pip
-RUN pip install flask-cors
 # Install dependencies from requirements.txt
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
