@@ -14,7 +14,7 @@ A Virtual try on project that lets people visualize how a cloth would look on th
 
 ### Documents
 
-- [Report](in progress)
+- [Report](https://drive.google.com/file/d/1EJntHpjO-FyAUix-1OZxDUVCyMEuf7QK/view?usp=sharing)
 
 
 ### Local Run Instruction
