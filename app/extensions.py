@@ -9,6 +9,6 @@ from celery import Celery
 db = SQLAlchemy()
 migrate = Migrate()
 synthesiser = ImageSynthesiser()
-# synthesiser.preload()
+synthesiser.preload()
 def get_synthesiser():
     return synthesiser
