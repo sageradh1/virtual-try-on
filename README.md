@@ -1,3 +1,24 @@
+# MirrorStyle
+
+## Description
+A Virtual try on project
+
+
+## Video
+
+- [Presentation Video](https://drive.google.com/file/d/1VItRJIAfZ5vvfCUS9s3IwWx6jokNX0V9/view?usp=sharing)
+
+## PDF
+
+- [Presentation PDF](https://drive.google.com/file/d/1ExNIrA7xUcunsW3yZRDJA82Ip-kJNTQC/view?usp=sharing)
+
+## Documents
+
+- [Report](in progress)
+
+
+## Python
+
 See all the python version: 
 ```
 pyenv versions
@@ -94,17 +115,15 @@ pyenv virtualenvs
 
 To see current virtualenvs list:
 ```
-pyenv virtualenv 3.10.12 vto-2
-pyenv activate vto-2
+pyenv virtualenv 3.10.12 <env>
+pyenv activate <env>
 which pip
 
 
 if path is not accurate then, echo $PATH:
 if venv path is not there, add path:
-export PATH=/Users/<user>/.pyenv/versions/3.10.12/envs/vto-2/bin:$PATH
-source /Users/<user>/.pyenv/versions/3.10.12/envs/vto-2/bin/activate
+export PATH=/Users/<user>/.pyenv/versions/3.10.12/envs/<env>/bin:$PATH
+source /Users/<user>/.pyenv/versions/3.10.12/envs/<env>/bin/activate
 
 deactivate
 ``` 
-export PATH=/Users/sagar/.pyenv/versions/3.10.12/envs/vto-2/bin:$PATH
-source /Users/sagar/.pyenv/versions/3.10.12/envs/vto-2/bin/activate
