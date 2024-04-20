@@ -17,14 +17,17 @@ A Virtual try on project that lets people visualize how a cloth would look on th
 - [Report](in progress)
 
 
-### Python
+### Local Run Instruction
 
 To run:
 ```
 1. Clone the repo
 2. Copy .env.sample as .env and enter the right values/credentials
 3. pip install -r requirements.txt or poetry install
-3. flask run or poetry run flask run
+4. flask db init
+5. flask db migrate -m "Migration name"
+6. flask db upgrade
+7. flask run or poetry run flask run
 ```
 
 
