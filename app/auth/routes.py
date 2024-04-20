@@ -85,6 +85,7 @@ def register():
         uploaded_file_path = os.path.join(current_app.config['UPLOADED_PHOTOS_DEST'], new_uploaded_filename)
         print("uploaded_file_path",uploaded_file_path)
         file.save(uploaded_file_path)
+        app_logger.debug("Completed saving original file")
         
         data_dict = dict()
         data_dict['uploaded_filename_base']=uploaded_filename_base
