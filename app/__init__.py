@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 import os
 from config import DevelopmentConfig, ProductionConfig
 from app.extensions import db, migrate
@@ -8,8 +8,9 @@ from app.auth import auth as auth_blueprint
 
 def create_app():
     app = Flask(__name__, static_url_path='/static', static_folder='static')
+    CORS(app, origins="*")
 
-    app.secret_key = os.getenv('SECRET_KEY')
+    app.secret_key = os.getenv('FLASK_SECRET_KEY')
     if os.getenv('FLASK_ENV') == 'production':
         app.config.from_object(ProductionConfig)
     else:
