@@ -1,23 +1,34 @@
 # MirrorStyle
 
-## Description
-A Virtual try on project
+### Description
+A Virtual try on project that lets people visualize how a cloth would look on them without buying.
 
 
-## Video
+### Video
 
 - [Presentation Video](https://drive.google.com/file/d/1VItRJIAfZ5vvfCUS9s3IwWx6jokNX0V9/view?usp=sharing)
 
-## PDF
+### PDF
 
 - [Presentation PDF](https://drive.google.com/file/d/1ExNIrA7xUcunsW3yZRDJA82Ip-kJNTQC/view?usp=sharing)
 
-## Documents
+### Documents
 
 - [Report](in progress)
 
 
-## Python
+### Python
+
+To run:
+```
+1. Clone the repo
+2. Copy .env.sample as .env and enter the right values/credentials
+3. pip install -r requirements.txt or poetry install
+3. flask run or poetry run flask run
+```
+
+
+### Python
 
 See all the python version: 
 ```
