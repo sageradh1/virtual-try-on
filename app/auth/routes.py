@@ -85,6 +85,7 @@ def register():
         uploaded_file_path = os.path.join(current_app.config['UPLOADED_PHOTOS_DEST'], new_uploaded_filename)
         print("uploaded_file_path",uploaded_file_path)
         file.save(uploaded_file_path)
+        app_logger.debug("Completed saving original file")
         
         data_dict = dict()
         data_dict['uploaded_filename_base']=uploaded_filename_base
@@ -190,22 +191,22 @@ def get_users():
 @auth.route('/get-generated-images', methods=['GET'])
 def get_generated_images():
     try:
-        if 'username' not in session:
+        username=request.args.get('username')
+        if not username:
             return jsonify({
-                "status": 401,
-                "error": "Unauthorized",
-                "message": "Need to login before accessing your product id"
-            }), 401
-        username = session['username']
+                    "status": 422,
+                    "error": "Bad request",
+                    "message": f"Username is missing."
+                }), 422
         images = GeneratedImage.query.filter_by(username=username)
         images_data = [image.to_dict() for image in images]
         return jsonify(images_data), 200
     except Exception as e:
-            app_logger.exception("Error while fetching generated images", e)
-            return jsonify({
-                "status": 500,
-                "message": "Error while fetching information"
-            }), 400
+        app_logger.exception("Error while fetching generated images", e)
+        return jsonify({
+            "status": 500,
+            "message": "Error while fetching information"
+        }), 400
 
 def filter_by_gender(list, gender):
     filtered_list = [obj for obj in list if obj.get("gender") == gender]
