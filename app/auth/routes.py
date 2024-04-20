@@ -237,7 +237,7 @@ def protected_route():
         
 @auth.route('/product-info',methods=['GET'])
 def product_info():
-    if 'user_id' not in session:
+    if 'username' not in session:
         abort(401)
     else:
         if request.method == 'GET':
