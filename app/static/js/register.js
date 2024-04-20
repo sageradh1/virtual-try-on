@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(form);
 
         try {
-            const response = await fetch(`${baseUrl}/auth/register`, {
+            const response = await fetch(`${baseUrl}/auth/register-postman`, {
                 method: 'POST',
                 body: formData
             });

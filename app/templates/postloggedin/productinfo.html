@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Display</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='stylesheets/styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
@@ -121,10 +121,16 @@
             <img src="https://via.placeholder.com/400" alt="Product Image">
         </div>
         <div class="product-details">
-            <h2>Product Name</h2>
+            <h2 id="productName"></h2>
             <p>Description of the product goes here. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
             <p class="price">Price: $10</p>
-            <a href="#" class="try-on">Try On</a>
+            <div style="display: flex;">
+            <button class="try-on" style="margin-right: 20px;" id="tryOnButton">Try On</button>
+            <button class="try-on" style="background-color: yellowgreen;" class="add-to-cart-btn">
+                <i class="fas fa-shopping-cart"></i> Add to Cart
+              </button>
+            </div>
+              
             <div class="colors">
                 <span class="color" style="background-color: #ff0000;"></span>
                 <span class="color" style="background-color: #00ff00;"></span>
@@ -132,12 +138,11 @@
             </div>
         </div>
     </div>
-    <div class="dialog-box" id="try-on-dialog">
-        <div class="dialog-content">
-            <img id="try-on-image" src="" alt="Try-on Image">
-            <button onclick="closeDialog()">Close</button>
-        </div>
-    </div>
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <img id="fullImage1" class="modal-image" src="" alt="Image 1">
+        <img id="fullImage2" class="modal-image" src="" alt="Image 2">
+      </div>
     <div class="related-products">
         <h3>Related Products</h3>
         <div class="related-product">
@@ -163,32 +168,59 @@
         </div>
     </div>
 </div>
-<script>
-    function toggleDetails() {
-        var details = document.getElementById("product-details");
-        details.classList.toggle("active");
-    }
-    // JavaScript to handle the dialog box functionality
-    const tryOnButtons = document.querySelectorAll('.try-on');
-    const dialogBox = document.getElementById('try-on-dialog');
-    const tryOnImage = document.getElementById('try-on-image');
 
-    tryOnButtons.forEach(button => {
-        button.addEventListener('click', function(event) {
-            event.preventDefault();
-            const productImage = this.parentNode.querySelector('img').src;
-            tryOnImage.src = productImage;
-            showDialog();
-        });
+   
+<script src="{{ url_for('static',filename='js/productinfo.js') }}"></script>
+<script>
+    var baseUrl = 'http://18.213.17.243:8081'
+    document.addEventListener("DOMContentLoaded", function() {
+    const modal = document.getElementById('imageModal');
+    const fullImage1 = document.getElementById('fullImage1');
+    const fullImage2 = document.getElementById('fullImage2');
+    const tryOnButton = document.getElementById('tryOnButton');
+    const closeBtn = document.getElementsByClassName('close')[0];
+
+    tryOnButton.addEventListener('click', function() {
+        // Get the image data from localStorage
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        const imageData = JSON.parse(localStorage.getItem('vto_generated'));
+
+
+        // Selecting the first image for demonstration
+        const imageSrc = imageData.find(product => product.product_id.toString() === productId).generated_image_path; // Replace with your actual image data
+        const fileName = imageSrc.substring(imageSrc.lastIndexOf('/') + 1);
+        // Set the image source in the modal
+
+        var newIngSrc = `${baseUrl}/static/generated/${fileName}`
+
+        const productData = JSON.parse(localStorage.getItem('vto_products'));
+
+        // Find the product with the matching ID
+        const product = productData.find(product => product.id.toString() === productId);
+
+        fullImage2.src = newIngSrc;
+        fullImage1.src =`${baseUrl}/static/clothes/${product.filename}`;
+
+        // Display the modal
+        modal.style.display = 'block';
     });
 
-    function showDialog() {
-        dialogBox.style.display = 'flex';
-    }
+    // Close the modal when the close button is clicked
+    closeBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
 
-    function closeDialog() {
-        dialogBox.style.display = 'none';
-    }
+    // Close the modal when clicking outside the modal
+    window.addEventListener('click', function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    });
+});
+
 </script>
 </body>
 </html>
