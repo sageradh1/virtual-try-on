@@ -15,33 +15,13 @@
         </div>
         <ul>
             <li style="float: right;"><a href="auth/login">Login</a></li>
-            <li style="float: right;"><a href="auth/register">Signup</a></li>
+            <li style="float: right;"><a href="auth/register-postman">Signup</a></li>
         </ul>
     </nav>
     
-    <div class="container">
-        <div class="product">
-            <img src="https://via.placeholder.com/200" alt="Product 1">
-            <h2>Product 1</h2>
-            <p>Description of Product 1.</p>
-            <p>Price: $10</p>
-            <a href="#" class="btn">Add to Cart</a>
-        </div>
-        <div class="product">
-            <img src="https://via.placeholder.com/200" alt="Product 2">
-            <h2>Product 2</h2>
-            <p>Description of Product 2.</p>
-            <p>Price: $20</p>
-            <a href="#" class="btn">Add to Cart</a>
-        </div>
-        <div class="product">
-            <img src="https://via.placeholder.com/200" alt="Product 3">
-            <h2>Product 3</h2>
-            <p>Description of Product 3.</p>
-            <p>Price: $30</p>
-            <a href="#" class="btn">Add to Cart</a>
-        </div>
-        <!-- Add more product listings here -->
+    <div class="container" id="productContainer">
+        
     </div>
+    <script src="{{ url_for('static',filename='js/index.js') }}"></script>
 </body>
 </html>

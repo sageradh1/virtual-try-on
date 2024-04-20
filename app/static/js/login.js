@@ -1,22 +1,33 @@
 var baseUrl = 'http://18.213.17.243:8081'
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('form');
 
-    form.addEventListener('submit', async function(event) {
+    form.addEventListener('submit', async function (event) {
         event.preventDefault();
 
         const formData = new FormData(form);
-
+        
         try {
             const response = await fetch(`${baseUrl}/auth/login`, {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+
+                    username: formData.get('username'),
+                    password: formData.get('password')
+
+
+                })
             });
+            const data = await response.json();
 
             if (response.ok) {
                 // Registration successful
-                console.log('Login successful');
+                localStorage.setItem('vto_login',JSON.stringify(data.data))
+                console.log('Login successful', data.data);
                 window.location.href = '/auth/protected-route'; // Redirect to homepage or any other page
             } else {
                 // Registration failed
