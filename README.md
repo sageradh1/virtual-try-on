@@ -31,7 +31,7 @@ To run:
 ```
 
 
-### Python Snippet
+### Python+Peotry Snippets if required
 
 See all the python version: 
 ```
