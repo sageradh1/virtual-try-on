@@ -18,37 +18,38 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Configure GCP credentials
-      id: auth
-      uses: google-github-actions/auth@v2
-      with:
-        credentials_json: "${{ secrets.VTO_SECRETS }}"
+      # To be used after GCP setup is done
+    # - name: Configure GCP credentials
+    #   id: auth
+    #   uses: google-github-actions/auth@v2
+    #   with:
+    #     credentials_json: "${{secrets.VTO_SECRETS }}"
 
-    - name: 'Set up Cloud SDK'
-      uses: 'google-github-actions/setup-gcloud@v2'
+    # - name: 'Set up Cloud SDK'
+    #   uses: 'google-github-actions/setup-gcloud@v2'
   
-    - name: 'Use gcloud CLI'
-      run: 'gcloud auth list --filter=status:ACTIVE --format="value(account)"'
+    # - name: 'Use gcloud CLI'
+    #   run: 'gcloud auth list --filter=status:ACTIVE --format="value(account)"'
 
-    - name: Build Docker Image
-      run: docker build -t $IMAGE_NAME:latest .
+    # - name: Build Docker Image
+    #   run: docker build -t $IMAGE_NAME:latest .
 
-    - name: Configure Docker Client
-      run: gcloud auth configure-docker $LOCATION --quiet
+    # - name: Configure Docker Client
+    #   run: gcloud auth configure-docker $LOCATION --quiet
 
-    - name: Push Docker Image to Artifact Registry
-      env:
-        GIT_TAG: v0.1.0
-      run: |
-        docker tag $IMAGE_NAME:latest $LOCATION/$PROJECT_ID/vto-artifact/$IMAGE_NAME:latest
-        docker tag $IMAGE_NAME:latest $LOCATION/$PROJECT_ID/vto-artifact/$IMAGE_NAME:$GIT_TAG
-        docker push $LOCATION/$PROJECT_ID/vto-artifact/$IMAGE_NAME:latest
-        docker push $LOCATION/$PROJECT_ID/vto-artifact/$IMAGE_NAME:$GIT_TAG
+    # - name: Push Docker Image to Artifact Registry
+    #   env:
+    #     GIT_TAG: v0.1.0
+    #   run: |
+    #     docker tag $IMAGE_NAME:latest $LOCATION/$PROJECT_ID/vto-artifact/$IMAGE_NAME:latest
+    #     docker tag $IMAGE_NAME:latest $LOCATION/$PROJECT_ID/vto-artifact/$IMAGE_NAME:$GIT_TAG
+    #     docker push $LOCATION/$PROJECT_ID/vto-artifact/$IMAGE_NAME:latest
+    #     docker push $LOCATION/$PROJECT_ID/vto-artifact/$IMAGE_NAME:$GIT_TAG
 
-    - name: Deploy and Update Traffic
-      run: |
-        gcloud run deploy vto-docker-image-latest \
-        --image=northamerica-northeast2-docker.pkg.dev/virtual-try-on-420112/vto-artifact/vto-docker-image-latest \
-        --region=northamerica-northeast2 \
-        --project=virtual-try-on-420112 \
-        && gcloud run services update-traffic vto-docker-image-latest --to-latest --region=northamerica-northeast2
+    # - name: Deploy and Update Traffic
+    #   run: |
+    #     gcloud run deploy vto-docker-image-latest \
+    #     --image=northamerica-northeast2-docker.pkg.dev/virtual-try-on-420112/vto-artifact/vto-docker-image-latest \
+    #     --region=northamerica-northeast2 \
+    #     --project=virtual-try-on-420112 \
+    #     && gcloud run services update-traffic vto-docker-image-latest --to-latest --region=northamerica-northeast2
