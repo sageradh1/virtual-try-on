@@ -4,10 +4,6 @@
 A Virtual try on project that lets people visualize how a cloth would look on them without buying.
 
 
-### Video
-
-- [Presentation Video](https://drive.google.com/file/d/1VItRJIAfZ5vvfCUS9s3IwWx6jokNX0V9/view?usp=sharing)
-
 ### PDF
 
 - [Presentation PDF](https://drive.google.com/file/d/1ExNIrA7xUcunsW3yZRDJA82Ip-kJNTQC/view?usp=sharing)
