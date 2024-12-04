@@ -30,3 +30,21 @@ To run:
 
 ### Db snippets
 
+### Linting
+
+Packages used
+```
+1. pylint   : to find out errors, improvement, breach of pep8 conventions
+2. black    : to autocorrect the issues
+```
+
+To use linting:
+```
+1. Make changes to the files
+2. After the changes are complete, run check_fix_lint.sh
+3. The code will do linting and highlight remaining issues
+4. Keep improving the code until the linting score is more than 8.5.
+5. Once the score is more than the threshold, push the code. 
+```
+
+Happy Coding !!
